@@ -485,38 +485,40 @@ function App() {
             </div>
           </div>
 
-          <table className="accounts-table">
-            <thead>
-              <tr>
-                <th>Address</th>
-                <th>Type</th>
-                <th>Rent</th>
-                <th>Status</th>
-                <th>Reclaim?</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAccounts.map((account) => (
-                <tr key={account.address}>
-                  <td className="address-cell">{formatAddress(account.address)}</td>
-                  <td>{account.type}</td>
-                  <td>{lamportsToSol(account.rentLamports).toFixed(4)} SOL</td>
-                  <td>
-                    <span className={`badge ${account.status === 'CLOSEABLE' ? 'closeable' : 'active'} `}>
-                      <span className="badge-icon">{account.status === 'CLOSEABLE' ? Icons.check : Icons.lock}</span>
-                      {account.status === 'CLOSEABLE' ? 'Closeable' : 'Active'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`badge ${account.classification === 'RECLAIMABLE' ? 'reclaimable' : 'monitor'} `}>
-                      <span className="badge-icon">{account.classification === 'RECLAIMABLE' ? Icons.recycle : Icons.eye}</span>
-                      {account.classification === 'RECLAIMABLE' ? 'Yes' : 'No'}
-                    </span>
-                  </td>
+          <div className="table-scroll-wrapper">
+            <table className="accounts-table">
+              <thead>
+                <tr>
+                  <th>Address</th>
+                  <th>Type</th>
+                  <th>Rent</th>
+                  <th>Status</th>
+                  <th>Reclaim?</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredAccounts.map((account) => (
+                  <tr key={account.address}>
+                    <td className="address-cell">{formatAddress(account.address)}</td>
+                    <td>{account.type}</td>
+                    <td>{lamportsToSol(account.rentLamports).toFixed(4)} SOL</td>
+                    <td>
+                      <span className={`badge ${account.status === 'CLOSEABLE' ? 'closeable' : 'active'} `}>
+                        <span className="badge-icon">{account.status === 'CLOSEABLE' ? Icons.check : Icons.lock}</span>
+                        {account.status === 'CLOSEABLE' ? 'Closeable' : 'Active'}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`badge ${account.classification === 'RECLAIMABLE' ? 'reclaimable' : 'monitor'} `}>
+                        <span className="badge-icon">{account.classification === 'RECLAIMABLE' ? Icons.recycle : Icons.eye}</span>
+                        {account.classification === 'RECLAIMABLE' ? 'Yes' : 'No'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

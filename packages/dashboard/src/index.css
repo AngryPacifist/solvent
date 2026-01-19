@@ -726,6 +726,8 @@ body {
   /* Chart section */
   .chart-section {
     padding: 1rem;
+    padding-bottom: 3rem;
+    overflow: visible;
   }
 
   .chart-section h3 {
@@ -734,7 +736,9 @@ body {
   }
 
   .chart-container {
-    height: 200px;
+    height: 250px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
   }
 
   /* Accounts section */
@@ -768,20 +772,23 @@ body {
     justify-content: flex-start;
   }
 
-  /* Table adjustments */
+  /* Table adjustments - horizontal scroll */
+  .table-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+
   .accounts-table {
     font-size: 0.8rem;
+    min-width: 500px;
   }
 
   .accounts-table th,
   .accounts-table td {
     padding: 0.75rem 0.5rem;
-  }
-
-  /* Hide less important columns on mobile */
-  .accounts-table th:nth-child(2),
-  .accounts-table td:nth-child(2) {
-    display: none;
+    white-space: nowrap;
   }
 
   /* Footer */
