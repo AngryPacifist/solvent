@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import './App.css'
 
 // SVG Icons
@@ -10,7 +10,61 @@ const Icons = {
   check: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>,
   lock: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>,
   eye: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>,
-  testTube: <svg width="24" height="24" viewBox="0 0 32 32" fill="none"><path d="M11 4h10v3h-2v7.5l6.5 11.5a3 3 0 01-2.6 4.5H9.1a3 3 0 01-2.6-4.5L13 14.5V7h-2V4z" fill="currentColor" /></svg>
+  chevronDown: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>,
+  testTube: <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M14.5 2l6 6-8.5 8.5c-1.5 1.5-4 1.5-5.5 0s-1.5-4 0-5.5L14.5 2z" fill="currentColor" /><path d="M14.5 2L9 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+}
+
+// Custom Dropdown Component
+function NetworkDropdown({ value, onChange }: { value: string, onChange: (val: string) => void }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const options = [
+    { value: 'devnet', label: 'Devnet' },
+    { value: 'mainnet-beta', label: 'Mainnet' }
+  ]
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const selectedOption = options.find(o => o.value === value)
+
+  return (
+    <div className="custom-dropdown" ref={dropdownRef}>
+      <button
+        className="dropdown-trigger"
+        onClick={() => setIsOpen(!isOpen)}
+        type="button"
+      >
+        <span>{selectedOption?.label}</span>
+        <span className={`dropdown-arrow ${isOpen ? 'open' : ''}`}>{Icons.chevronDown}</span>
+      </button>
+      {isOpen && (
+        <div className="dropdown-menu">
+          {options.map(option => (
+            <button
+              key={option.value}
+              className={`dropdown-option ${value === option.value ? 'selected' : ''}`}
+              onClick={() => {
+                onChange(option.value)
+                setIsOpen(false)
+              }}
+              type="button"
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 // Types
@@ -175,7 +229,10 @@ function App() {
     <div className="app">
       {/* Header */}
       <header className="header">
-        <h1><span className="header-icon">{Icons.testTube}</span> Solvent</h1>
+        <h1 className="header-title">
+          <span className="header-icon">🧪</span>
+          <span>Solvent</span>
+        </h1>
         <p>Rent monitoring and reclaim for Kora operators</p>
       </header>
 
@@ -189,14 +246,10 @@ function App() {
           onChange={(e) => setAddress(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleScan()}
         />
-        <select
-          className="network-select"
+        <NetworkDropdown
           value={network}
-          onChange={(e) => setNetwork(e.target.value as Network)}
-        >
-          <option value="devnet">Devnet</option>
-          <option value="mainnet-beta">Mainnet</option>
-        </select>
+          onChange={(val) => setNetwork(val as Network)}
+        />
         <button
           className="scan-button"
           onClick={handleScan}
