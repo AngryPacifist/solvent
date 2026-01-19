@@ -32,7 +32,8 @@ When Kora sponsors transactions that create accounts (like ATAs), rent SOL gets 
 | Filter by status | ✅ | ✅ |
 | Auto-reclaim rent | ✅ | 🔜 |
 | Dry-run mode | ✅ | — |
-| Export reports | ✅ | — |
+| Export reports (JSON/CSV) | ✅ | — |
+| Live watch mode | ✅ | — |
 
 ---
 
@@ -68,6 +69,13 @@ solvent list <FEE_PAYER_ADDRESS> --network devnet
 
 # List only reclaimable accounts
 solvent list <FEE_PAYER_ADDRESS> --filter reclaimable
+
+# Export to JSON or CSV
+solvent export <FEE_PAYER_ADDRESS> --format json --output report
+solvent export <FEE_PAYER_ADDRESS> --format csv --output report
+
+# Live watch mode (poll for new closeable accounts)
+solvent watch <FEE_PAYER_ADDRESS> --interval 60
 
 # Reclaim rent (dry run)
 solvent reclaim <FEE_PAYER_ADDRESS> --dry-run
@@ -141,7 +149,9 @@ solvent/
 │   │   └── commands/
 │   │       ├── scan.ts
 │   │       ├── list.ts
-│   │       └── reclaim.ts
+│   │       ├── reclaim.ts
+│   │       ├── export.ts   # NEW: JSON/CSV export
+│   │       └── watch.ts    # NEW: Live monitoring
 │   │
 │   └── dashboard/      # Web interface
 │       └── src/
