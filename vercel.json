@@ -1,6 +1,6 @@
 {
     "installCommand": "npm install",
-    "buildCommand": "npm run build -w @solvent/core && npm run build -w dashboard",
-    "outputDirectory": "packages/dashboard/dist",
+    "buildCommand": "npm run build -w @solvent/core && npm run build -w dashboard && cp -r packages/dashboard/dist .",
+    "outputDirectory": "dist",
     "framework": null
 }
