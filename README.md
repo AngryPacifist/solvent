@@ -46,35 +46,45 @@ When Kora sponsors transactions that create accounts (like ATAs), rent SOL gets 
 
 ```bash
 # Clone and install
-git clone https://github.com/AngryPacifist/solvent.git
+git clone https://github.com/yourusername/solvent.git
 cd solvent
 npm install
+
+# Build
 npm run build
+
+# Link CLI globally (optional - enables `solvent` command)
+npm link -w packages/cli
 ```
 
 ### CLI Usage
 
 ```bash
 # Scan a fee payer address
-npx solvent scan <FEE_PAYER_ADDRESS> --network devnet
+solvent scan <FEE_PAYER_ADDRESS> --network devnet
 
 # List all sponsored accounts
-npx solvent list <FEE_PAYER_ADDRESS> --network devnet
+solvent list <FEE_PAYER_ADDRESS> --network devnet
 
 # List only reclaimable accounts
-npx solvent list <FEE_PAYER_ADDRESS> --filter reclaimable
+solvent list <FEE_PAYER_ADDRESS> --filter reclaimable
 
 # Reclaim rent (dry run)
-npx solvent reclaim <FEE_PAYER_ADDRESS> --dry-run
+solvent reclaim <FEE_PAYER_ADDRESS> --dry-run
 
 # Reclaim rent (live)
-npx solvent reclaim <FEE_PAYER_ADDRESS> --keypair ~/.config/solana/id.json
+solvent reclaim <FEE_PAYER_ADDRESS> --keypair ~/.config/solana/id.json
 ```
+
+> **Note:** If you haven't run `npm link`, use `npx solvent` or `node packages/cli/dist/index.js` instead.
 
 ### Dashboard
 
 ```bash
-npm run dashboard
+# Start the dashboard
+cd packages/dashboard
+npm run dev
+
 # Open http://localhost:5173
 ```
 
