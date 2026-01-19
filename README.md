@@ -107,6 +107,21 @@ For production mainnet use, we recommend a dedicated RPC provider:
 
 Devnet works without restrictions for testing.
 
+### Transaction Scan Limits
+
+By default, Solvent scans the **last 100 transactions** to balance speed vs completeness.
+
+For fee payers with extensive history, increase the limit:
+
+```bash
+# Scan more transactions (up to 1000 supported)
+solvent scan <address> --limit 500
+
+# Dashboard uses fixed limit of 100 for responsiveness
+```
+
+> **Note:** Higher limits = more RPC calls = slower scan. For operators with thousands of sponsorships, consider running CLI with a dedicated RPC.
+
 ---
 
 ## 📊 How It Works
