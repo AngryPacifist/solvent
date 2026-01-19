@@ -190,7 +190,20 @@ We verified this approach successfully reclaims 0.002 SOL per ATA!
 
 ---
 
-## 📈 Example Output
+## 📈 Screenshots
+
+### Dashboard
+![Dashboard](./assets/dashboard.png)
+
+### CLI
+![CLI](./assets/cli.png)
+
+### List Command
+![List](./assets/list.png)
+
+---
+
+## 📊 Example Output
 
 ### CLI Scan
 ```
@@ -198,26 +211,42 @@ We verified this approach successfully reclaims 0.002 SOL per ATA!
 
 Fee Payer: 8F9ijbjy1LLLTnEtx9jv7D4i5J2oFSERivE1bZkLiL2v
 Network: devnet
+Limit: 100 transactions
+
+Classifying 26 accounts...
+  Classified 10/26 (4 reclaimable)
+  Classified 20/26 (6 reclaimable)
 
 Classification complete:
-  Total: 6
-  Reclaimable: 1
-  Closeable (balance=0): 4
+  Total: 26
+  Reclaimable: 7
+  Closeable (balance=0): 24
 
 ╔══════════════════════════════════════════════════════════════╗
 ║                    SOLVENT RENT REPORT                       ║
 ╠══════════════════════════════════════════════════════════════╣
-║  📊 Total Accounts:                    6                     ║
-║  💰 Total Rent Locked:          0.012234 SOL                 ║
-║  ✅ Reclaimable:                0.002039 SOL                 ║
+║  📊 Total Accounts:                   24                     ║
+║  💰 Total Rent Locked:          0.048943 SOL                 ║
+╠══════════════════════════════════════════════════════════════╣
+║  ✅ Reclaimable Accounts:              7                     ║
+║  💎 Reclaimable Rent:           0.014275 SOL                 ║
+╠══════════════════════════════════════════════════════════════╣
+║  👁️  Monitor-Only Rent:          0.034668 SOL                 ║
+║  ⏳ Closeable (balance=0):            24                     ║
 ╚══════════════════════════════════════════════════════════════╝
-```
 
-### Dashboard
-- Modern dark theme with teal accents
-- Stats cards for quick overview
-- Filterable accounts table
-- Status badges (Closeable, Active, Reclaimable)
+💡 Tip: Run 'solvent reclaim <address>' to reclaim 0.014275 SOL
+ℹ️  Note: 17 closeable accounts require owner action (monitor-only)
+
+╔════════════════════════════════════════════════════════════════╗
+║  💎 ROI CALCULATOR                                             ║
+╠════════════════════════════════════════════════════════════════╣
+║  If close_authority was set to fee payer during creation:      ║
+║  → You could reclaim:   0.034668 SOL (17 accounts)             ║
+║                                                                ║
+║  💡 Set close_authority = fee payer when sponsoring ATAs       ║
+╚════════════════════════════════════════════════════════════════╝
+```
 
 ---
 

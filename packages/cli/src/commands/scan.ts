@@ -58,6 +58,24 @@ export async function scanCommand(address: string, options: ScanOptions) {
             console.log(`ℹ️  Note: ${alertable} closeable accounts require owner action (monitor-only)`);
         }
 
+        // ROI Calculator - show potential savings
+        const monitorOnlyCloseable = accounts.filter(
+            a => a.classification === 'MONITOR_ONLY' && a.status === 'CLOSEABLE'
+        );
+        if (monitorOnlyCloseable.length > 0) {
+            const potentialSavings = monitorOnlyCloseable.reduce(
+                (sum, a) => sum + a.rentLamports, 0
+            ) / 1_000_000_000;
+            console.log(`\n╔════════════════════════════════════════════════════════════════╗`);
+            console.log(`║  💎 ROI CALCULATOR                                             ║`);
+            console.log(`╠════════════════════════════════════════════════════════════════╣`);
+            console.log(`║  If close_authority was set to fee payer during creation:      ║`);
+            console.log(`║  → You could reclaim: ${potentialSavings.toFixed(6).padStart(10)} SOL (${monitorOnlyCloseable.length} accounts)       ║`);
+            console.log(`║                                                                ║`);
+            console.log(`║  💡 Set close_authority = fee payer when sponsoring ATAs       ║`);
+            console.log(`╚════════════════════════════════════════════════════════════════╝`);
+        }
+
     } catch (error: any) {
         console.error('❌ Error:', error.message);
         process.exit(1);

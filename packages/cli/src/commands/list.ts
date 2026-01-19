@@ -19,11 +19,30 @@ interface ListOptions {
     limit: string;
 }
 
+// Format time duration as "Xd Xh" or "Xh Xm"
+function formatAge(createdAt: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 0) {
+        const remainingHours = diffHours % 24;
+        return `${diffDays}d ${remainingHours}h`;
+    } else if (diffHours > 0) {
+        const remainingMins = diffMins % 60;
+        return `${diffHours}h ${remainingMins}m`;
+    } else {
+        return `${diffMins}m`;
+    }
+}
+
 function formatAccountTable(accounts: SponsoredAccount[]): void {
     // Header
-    console.log('\n┌──────────────────┬────────┬──────────────┬──────────┬────────────┐');
-    console.log('│ Address          │ Type   │ Rent (SOL)   │ Status   │ Reclaim?   │');
-    console.log('├──────────────────┼────────┼──────────────┼──────────┼────────────┤');
+    console.log('\n┌──────────────────┬────────┬──────────────┬──────────┬────────────┬──────────┐');
+    console.log('│ Address          │ Type   │ Rent (SOL)   │ Status   │ Reclaim?   │ Locked   │');
+    console.log('├──────────────────┼────────┼──────────────┼──────────┼────────────┼──────────┤');
 
     for (const account of accounts) {
         const addr = account.address.slice(0, 16) + '...';
@@ -31,11 +50,12 @@ function formatAccountTable(accounts: SponsoredAccount[]): void {
         const rent = lamportsToSol(account.rentLamports).toFixed(6).padStart(12);
         const status = account.status === 'CLOSEABLE' ? '✅ Close' : '🔒 Active';
         const reclaim = account.classification === 'RECLAIMABLE' ? '♻️ Yes' : '👁️ No';
+        const age = formatAge(account.createdAt).padEnd(8);
 
-        console.log(`│ ${addr} │ ${type} │ ${rent} │ ${status.padEnd(8)} │ ${reclaim.padEnd(10)} │`);
+        console.log(`│ ${addr} │ ${type} │ ${rent} │ ${status.padEnd(8)} │ ${reclaim.padEnd(10)} │ ${age} │`);
     }
 
-    console.log('└──────────────────┴────────┴──────────────┴──────────┴────────────┘');
+    console.log('└──────────────────┴────────┴──────────────┴──────────┴────────────┴──────────┘');
 }
 
 export async function listCommand(address: string, options: ListOptions) {
