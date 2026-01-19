@@ -1,6 +1,4 @@
-import { Buffer } from 'buffer'
-// @ts-ignore - Polyfill for Solana web3.js
-window.Buffer = Buffer
+// Buffer polyfill is handled by vite-plugin-node-polyfills
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'

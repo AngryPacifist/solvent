@@ -38,9 +38,12 @@ async function getTokenAccountInfo(
 export async function classifyAccount(
     creation: ParsedAccountCreation,
     feePayerAddress: string,
-    network: Network
+    network: Network,
+    rpcUrl?: string
 ): Promise<SponsoredAccount> {
-    const connection = getConnection(network);
+    const connection = rpcUrl
+        ? new Connection(rpcUrl, 'confirmed')
+        : getConnection(network);
     const feePayerLower = feePayerAddress.toLowerCase();
 
     // Default values
@@ -133,7 +136,8 @@ export async function classifyAccount(
 export async function classifyAccounts(
     creations: ParsedAccountCreation[],
     feePayerAddress: string,
-    network: Network
+    network: Network,
+    rpcUrl?: string
 ): Promise<SponsoredAccount[]> {
     console.log(`Classifying ${creations.length} accounts...`);
 
@@ -142,7 +146,7 @@ export async function classifyAccounts(
 
     for (const creation of creations) {
         try {
-            const account = await classifyAccount(creation, feePayerAddress, network);
+            const account = await classifyAccount(creation, feePayerAddress, network, rpcUrl);
             accounts.push(account);
             processed++;
 

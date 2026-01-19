@@ -62,7 +62,10 @@ export async function scanFeePayerHistory(
     network: Network,
     options: ScanOptions = {}
 ): Promise<TransactionInfo[]> {
-    const connection = getConnection(network);
+    // Use custom RPC URL if provided, otherwise use default
+    const connection = options.rpcUrl
+        ? new Connection(options.rpcUrl, 'confirmed')
+        : getConnection(network);
     const feePayer = new PublicKey(feePayerAddress);
 
     const limit = options.limit || 1000;
@@ -109,9 +112,12 @@ export async function scanFeePayerHistory(
 export async function parseTransaction(
     signature: string,
     feePayerAddress: string,
-    network: Network
+    network: Network,
+    rpcUrl?: string
 ): Promise<ParsedAccountCreation[]> {
-    const connection = getConnection(network);
+    const connection = rpcUrl
+        ? new Connection(rpcUrl, 'confirmed')
+        : getConnection(network);
 
     const tx = await connection.getParsedTransaction(signature, {
         maxSupportedTransactionVersion: 0
@@ -214,7 +220,7 @@ export async function scanAndParseAccounts(
 
     for (const tx of successfulTxs) {
         try {
-            const creations = await parseTransaction(tx.signature, feePayerAddress, network);
+            const creations = await parseTransaction(tx.signature, feePayerAddress, network, options.rpcUrl);
             allCreations.push(...creations);
             processed++;
 

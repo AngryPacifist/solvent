@@ -1,5 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import './App.css'
+import {
+  scanAndParseAccounts,
+  classifyAccounts,
+  calculateRentStats,
+  lamportsToSol,
+  type SponsoredAccount,
+  type RentStats
+} from '@solvent/core'
 
 // SVG Icons
 const Icons = {
@@ -67,40 +75,11 @@ function NetworkDropdown({ value, onChange }: { value: string, onChange: (val: s
   )
 }
 
-// Types
-interface SponsoredAccount {
-  address: string
-  type: 'ATA' | 'SYSTEM' | 'PDA' | 'UNKNOWN'
-  owner: string
-  closeAuthority: string | null
-  mint: string | null
-  rentLamports: number
-  tokenBalance: number
-  classification: 'RECLAIMABLE' | 'MONITOR_ONLY'
-  status: 'ACTIVE' | 'CLOSEABLE' | 'CLOSED'
-  creationSignature: string
-  createdAt: Date
-}
-
-interface RentStats {
-  totalLocked: number
-  reclaimable: number
-  monitorOnly: number
-  totalAccounts: number
-  closeableAccounts: number
-  reclaimableAccounts: number
-}
-
 type Network = 'devnet' | 'mainnet-beta'
 type FilterType = 'all' | 'reclaimable' | 'closeable'
 
-// Helpers
-function lamportsToSol(lamports: number): number {
-  return lamports / 1_000_000_000
-}
-
 function formatAddress(address: string): string {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`
+  return `${address.slice(0, 6)}...${address.slice(-4)} `
 }
 
 function App() {
@@ -113,7 +92,7 @@ function App() {
   const [filter, setFilter] = useState<FilterType>('all')
   const [error, setError] = useState<string | null>(null)
 
-  // Scan function - calls Solana RPC directly
+  // Scan function - uses @solvent/core shared library
   const handleScan = useCallback(async () => {
     if (!address) return
 
@@ -121,103 +100,27 @@ function App() {
     setError(null)
 
     try {
-      // Import Solana web3
-      const { Connection, PublicKey } = await import('@solana/web3.js')
-      const { getAccount } = await import('@solana/spl-token')
-
-      const rpcUrl = network === 'devnet'
-        ? 'https://api.devnet.solana.com'
-        : (customRpc || 'https://api.mainnet-beta.solana.com')
-
-      const connection = new Connection(rpcUrl, 'confirmed')
-      const feePayer = new PublicKey(address)
-
-      // Get transaction signatures
-      const signatures = await connection.getSignaturesForAddress(feePayer, { limit: 50 })
-
-      // Parse transactions for account creations
-      const foundAccounts: SponsoredAccount[] = []
-
-      for (const sig of signatures.slice(0, 20)) {
-        try {
-          const tx = await connection.getParsedTransaction(sig.signature, {
-            maxSupportedTransactionVersion: 0
-          })
-
-          if (!tx?.meta) continue
-
-          // Check instructions for account creations
-          for (const ix of tx.transaction.message.instructions) {
-            if ('parsed' in ix && ix.parsed) {
-              // Check for ATA creation
-              if (ix.program === 'spl-associated-token-account' && ix.parsed.type === 'create') {
-                const acct: SponsoredAccount = {
-                  address: ix.parsed.info.account,
-                  type: 'ATA',
-                  owner: ix.parsed.info.wallet,
-                  closeAuthority: null,
-                  mint: ix.parsed.info.mint,
-                  rentLamports: 2039280, // Approximate ATA rent
-                  tokenBalance: 0,
-                  classification: 'MONITOR_ONLY',
-                  status: 'ACTIVE',
-                  creationSignature: sig.signature,
-                  createdAt: new Date((sig.blockTime || 0) * 1000)
-                }
-
-                // Check if account still exists and get close authority
-                try {
-                  const tokenAccount = await getAccount(
-                    connection,
-                    new PublicKey(acct.address)
-                  )
-                  acct.tokenBalance = Number(tokenAccount.amount)
-                  acct.closeAuthority = tokenAccount.closeAuthority?.toBase58() || tokenAccount.owner.toBase58()
-                  acct.status = acct.tokenBalance === 0 ? 'CLOSEABLE' : 'ACTIVE'
-
-                  // Check if reclaimable
-                  if (acct.closeAuthority?.toLowerCase() === address.toLowerCase()) {
-                    acct.classification = 'RECLAIMABLE'
-                  }
-                } catch {
-                  acct.status = 'CLOSED'
-                }
-
-                // Avoid duplicates
-                if (!foundAccounts.some(a => a.address === acct.address)) {
-                  foundAccounts.push(acct)
-                }
-              }
-            }
-          }
-        } catch (e) {
-          console.error('Error parsing tx:', e)
-        }
+      // Get custom RPC URL if provided for mainnet
+      let rpcUrl: string | undefined
+      if (network === 'mainnet-beta' && customRpc) {
+        rpcUrl = customRpc
       }
 
-      setAccounts(foundAccounts)
+      // Use core library functions with options object
+      const scanOptions = { limit: 100, rpcUrl }
+      const creations = await scanAndParseAccounts(address, network, scanOptions)
+      const classifiedAccounts = await classifyAccounts(creations, address, network, rpcUrl)
+      const stats = calculateRentStats(classifiedAccounts)
 
-      // Calculate stats
-      const activeAccounts = foundAccounts.filter(a => a.status !== 'CLOSED')
-      const totalLocked = activeAccounts.reduce((sum, a) => sum + a.rentLamports, 0)
-      const reclaimableAccts = activeAccounts.filter(a => a.classification === 'RECLAIMABLE' && a.status === 'CLOSEABLE')
-      const reclaimable = reclaimableAccts.reduce((sum, a) => sum + a.rentLamports, 0)
-
-      setStats({
-        totalLocked: lamportsToSol(totalLocked),
-        reclaimable: lamportsToSol(reclaimable),
-        monitorOnly: lamportsToSol(totalLocked - reclaimable),
-        totalAccounts: activeAccounts.length,
-        closeableAccounts: activeAccounts.filter(a => a.status === 'CLOSEABLE').length,
-        reclaimableAccounts: reclaimableAccts.length
-      })
+      setAccounts(classifiedAccounts)
+      setStats(stats)
 
     } catch (e: any) {
       setError(e.message || 'Failed to scan')
     } finally {
       setLoading(false)
     }
-  }, [address, network])
+  }, [address, network, customRpc])
 
   // Filter accounts
   const filteredAccounts = accounts.filter(a => {
@@ -354,13 +257,13 @@ function App() {
                   <td>{account.type}</td>
                   <td>{lamportsToSol(account.rentLamports).toFixed(4)} SOL</td>
                   <td>
-                    <span className={`badge ${account.status === 'CLOSEABLE' ? 'closeable' : 'active'}`}>
+                    <span className={`badge ${account.status === 'CLOSEABLE' ? 'closeable' : 'active'} `}>
                       <span className="badge-icon">{account.status === 'CLOSEABLE' ? Icons.check : Icons.lock}</span>
                       {account.status === 'CLOSEABLE' ? 'Closeable' : 'Active'}
                     </span>
                   </td>
                   <td>
-                    <span className={`badge ${account.classification === 'RECLAIMABLE' ? 'reclaimable' : 'monitor'}`}>
+                    <span className={`badge ${account.classification === 'RECLAIMABLE' ? 'reclaimable' : 'monitor'} `}>
                       <span className="badge-icon">{account.classification === 'RECLAIMABLE' ? Icons.recycle : Icons.eye}</span>
                       {account.classification === 'RECLAIMABLE' ? 'Yes' : 'No'}
                     </span>

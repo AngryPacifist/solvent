@@ -128,6 +128,9 @@ export interface ScanOptions {
 
     /** Include closed accounts in results */
     includeClosed?: boolean;
+
+    /** Custom RPC URL (overrides network default) */
+    rpcUrl?: string;
 }
 
 // Reclaim options
