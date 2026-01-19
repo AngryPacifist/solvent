@@ -1,15 +1,5 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "packages/dashboard/package.json",
-            "use": "@vercel/static-build",
-            "config": {
-                "distDir": "dist"
-            }
-        }
-    ],
-    "installCommand": "npm install",
     "buildCommand": "npm run build",
-    "outputDirectory": "packages/dashboard/dist"
+    "outputDirectory": "packages/dashboard/dist",
+    "installCommand": "npm install"
 }
