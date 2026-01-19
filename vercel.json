@@ -1,6 +1,15 @@
 {
+    "version": 2,
+    "builds": [
+        {
+            "src": "packages/dashboard/package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "dist"
+            }
+        }
+    ],
     "installCommand": "npm install",
-    "buildCommand": "echo '--- ROOT LS ---' && ls -la && npm run build -w @solvent/core && npm run build -w dashboard && echo '--- DASHBOARD LS ---' && ls -R packages/dashboard/dist",
-    "outputDirectory": "packages/dashboard/dist",
-    "framework": null
+    "buildCommand": "npm run build",
+    "outputDirectory": "packages/dashboard/dist"
 }
