@@ -88,6 +88,17 @@ npm run dev
 # Open http://localhost:5173
 ```
 
+### Mainnet Usage
+
+> ⚠️ The public Solana mainnet RPC has rate limits that may block heavy scanning.
+
+For production mainnet use, we recommend a dedicated RPC provider:
+- [Helius](https://helius.dev) (free tier available)
+- [QuickNode](https://quicknode.com)
+- [Triton](https://triton.one)
+
+Devnet works without restrictions for testing.
+
 ---
 
 ## 📊 How It Works

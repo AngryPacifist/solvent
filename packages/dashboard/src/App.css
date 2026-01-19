@@ -42,6 +42,7 @@
 .custom-dropdown {
   position: relative;
   min-width: 150px;
+  z-index: 1000;
 }
 
 .dropdown-trigger {
@@ -84,7 +85,7 @@
   border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 0.5rem;
-  z-index: 100;
+  z-index: 1000;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
@@ -108,4 +109,37 @@
 .dropdown-option.selected {
   background: rgba(0, 212, 170, 0.15);
   color: var(--primary);
+}
+
+/* Custom RPC Input */
+.rpc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.rpc-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.rpc-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.rpc-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.rpc-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
 }

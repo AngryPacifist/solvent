@@ -106,6 +106,7 @@ function formatAddress(address: string): string {
 function App() {
   const [address, setAddress] = useState('')
   const [network, setNetwork] = useState<Network>('devnet')
+  const [customRpc, setCustomRpc] = useState(() => localStorage.getItem('solvent_rpc') || '')
   const [loading, setLoading] = useState(false)
   const [accounts, setAccounts] = useState<SponsoredAccount[]>([])
   const [stats, setStats] = useState<RentStats | null>(null)
@@ -126,7 +127,7 @@ function App() {
 
       const rpcUrl = network === 'devnet'
         ? 'https://api.devnet.solana.com'
-        : 'https://api.mainnet-beta.solana.com'
+        : (customRpc || 'https://api.mainnet-beta.solana.com')
 
       const connection = new Connection(rpcUrl, 'confirmed')
       const feePayer = new PublicKey(address)
@@ -258,6 +259,23 @@ function App() {
           {loading ? 'Scanning...' : 'Scan'}
         </button>
       </div>
+
+      {/* Custom RPC for Mainnet */}
+      {network === 'mainnet-beta' && (
+        <div className="rpc-container">
+          <input
+            type="text"
+            className="rpc-input"
+            placeholder="Custom RPC URL (optional, e.g. Helius)"
+            value={customRpc}
+            onChange={(e) => {
+              setCustomRpc(e.target.value)
+              localStorage.setItem('solvent_rpc', e.target.value)
+            }}
+          />
+          <span className="rpc-hint">⚠️ Public mainnet RPC has rate limits. Enter your RPC for better results.</span>
+        </div>
+      )}
 
       {/* Error */}
       {error && (
