@@ -46,7 +46,7 @@ When Kora sponsors transactions that create accounts (like ATAs), rent SOL gets 
 
 ```bash
 # Clone and install
-git clone https://github.com/yourusername/solvent.git
+git clone https://github.com/AngryPacifist/solvent
 cd solvent
 npm install
 
