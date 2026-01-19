@@ -1,0 +1,25 @@
+{
+    "name": "solvent",
+    "version": "1.0.0",
+    "description": "Rent monitoring and reclaim tool for Kora operators on Solana",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "npm run build --workspaces",
+        "dev": "npm run dev --workspace=@solvent/cli",
+        "cli": "npm run start --workspace=@solvent/cli",
+        "dashboard": "npm run dev --workspace=@solvent/dashboard"
+    },
+    "keywords": [
+        "solana",
+        "kora",
+        "rent",
+        "gasless",
+        "token-accounts"
+    ],
+    "author": "Outis",
+    "license": "MIT"
+}

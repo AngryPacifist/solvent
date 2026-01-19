@@ -1,0 +1,31 @@
+# Solvent
+
+# Dependencies
+node_modules/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build
+*.tsbuildinfo
+
+# Keypairs (NEVER commit these!)
+*-keypair.json
+*.json.bak
