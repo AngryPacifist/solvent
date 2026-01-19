@@ -1,0 +1,5 @@
+{
+    "buildCommand": "npm install && npm run build -w @solvent/core && npm run build -w packages/dashboard",
+    "outputDirectory": "packages/dashboard/dist",
+    "framework": null
+}
