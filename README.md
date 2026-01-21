@@ -8,7 +8,7 @@
 
 ---
 
-## 🎯 What is Solvent?
+## What is Solvent?
 
 **Solvent** helps Kora operators monitor and reclaim rent from sponsored accounts on Solana.
 
@@ -21,7 +21,7 @@ When Kora sponsors transactions that create accounts (like ATAs), rent SOL gets 
 
 ---
 
-## ✨ Features
+## Features
 
 | Feature | CLI | Dashboard | Telegram |
 |---------|-----|-----------|----------|
@@ -39,7 +39,7 @@ When Kora sponsors transactions that create accounts (like ATAs), rent SOL gets 
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+
@@ -126,7 +126,7 @@ solvent scan <address> --limit 500
 
 ---
 
-## 📊 How It Works
+## How It Works
 
 ### Account Classification
 
@@ -149,7 +149,7 @@ Solvent classifies sponsored accounts into two categories:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 solvent/
@@ -192,7 +192,7 @@ We verified this approach successfully reclaims 0.002 SOL per ATA!
 
 ---
 
-## 📈 Screenshots
+## Screenshots
 
 ### Dashboard
 ![Dashboard](./assets/dashboard.png)
@@ -205,7 +205,7 @@ We verified this approach successfully reclaims 0.002 SOL per ATA!
 
 ---
 
-## 📊 Example Output
+## Example Output
 
 ### CLI Scan
 ```
