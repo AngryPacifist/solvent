@@ -23,17 +23,19 @@ When Kora sponsors transactions that create accounts (like ATAs), rent SOL gets 
 
 ## ✨ Features
 
-| Feature | CLI | Dashboard |
-|---------|-----|-----------|
-| Scan fee payer history | ✅ | ✅ |
-| List sponsored accounts | ✅ | ✅ |
-| Calculate rent statistics | ✅ | ✅ |
-| Classify accounts | ✅ | ✅ |
-| Filter by status | ✅ | ✅ |
-| Auto-reclaim rent | ✅ | 🔜 |
-| Dry-run mode | ✅ | — |
-| Export reports (JSON/CSV) | ✅ | — |
-| Live watch mode | ✅ | — |
+| Feature | CLI | Dashboard | Telegram |
+|---------|-----|-----------|----------|
+| Scan fee payer history | ✅ | ✅ | ✅ |
+| List sponsored accounts | ✅ | ✅ | ✅ |
+| Calculate rent statistics | ✅ | ✅ | ✅ |
+| Classify accounts | ✅ | ✅ | ✅ |
+| Filter by status | ✅ | ✅ | — |
+| Auto-reclaim rent | ✅ | 🔜 | — |
+| Dry-run mode | ✅ | — | — |
+| Export reports (JSON/CSV) | ✅ | ✅ | — |
+| Live watch mode | ✅ | — | — |
+| Scheduled alerts | — | — | ✅ |
+| Address tracking | — | — | ✅ |
 
 ---
 
@@ -152,26 +154,11 @@ Solvent classifies sponsored accounts into two categories:
 ```
 solvent/
 ├── packages/
-│   ├── core/           # Shared library
-│   │   ├── types.ts    # Type definitions
-│   │   ├── config.ts   # Network config
-│   │   ├── scanner.ts  # Transaction scanning
-│   │   ├── classifier.ts # Account classification
-│   │   ├── analyzer.ts # Rent calculations
-│   │   └── reclaimer.ts # Close transactions
-│   │
+│   ├── core/           # Shared library (@angrypacifist/solvent-core)
 │   ├── cli/            # Command-line interface
-│   │   └── commands/
-│   │       ├── scan.ts
-│   │       ├── list.ts
-│   │       ├── reclaim.ts
-│   │       ├── export.ts   # NEW: JSON/CSV export
-│   │       └── watch.ts    # NEW: Live monitoring
-│   │
-│   └── dashboard/      # Web interface
-│       └── src/
-│           └── App.tsx
-│
+│   ├── dashboard/      # Web interface (React + Vite)
+│   └── telegram/       # Telegram bot (Vercel + grammY)
+├── docs/               # Documentation
 └── package.json        # Monorepo root
 ```
 
@@ -295,9 +282,11 @@ npm run dashboard
 
 ## 📚 Resources
 
+- [Full Documentation](./docs/) - Detailed guides and API reference
+- [Telegram Bot](https://t.me/solvent_rent_bot) - @solvent_rent_bot
+- [npm Package](https://www.npmjs.com/package/@angrypacifist/solvent-core) - @angrypacifist/solvent-core
 - [Kora Documentation](https://kora.network/docs)
 - [Solana Token Program](https://spl.solana.com/token)
-- [Builder's Log](./resources/BUILDERS_LOG.md) - Full development journey
 
 ---
 
