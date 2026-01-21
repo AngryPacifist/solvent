@@ -1,5 +1,5 @@
 {
     "installCommand": "cd ../.. && npm install",
-    "buildCommand": "cd ../.. && npm run build -w @solvent/core && cd packages/dashboard && npm run build",
+    "buildCommand": "cd ../.. && npm run build -w @angrypacifist/solvent-core && cd packages/dashboard && npm run build",
     "outputDirectory": "dist"
 }
