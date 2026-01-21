@@ -1,0 +1,26 @@
+{
+  "name": "@solvent/telegram",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "tsc",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@angrypacifist/solvent-core": "^1.0.0",
+    "@solana/spl-token": "^0.3.9",
+    "@solana/web3.js": "^1.87.0",
+    "@upstash/redis": "^1.28.0",
+    "grammy": "^1.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@vercel/node": "^3.0.0",
+    "dotenv": "^17.2.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.3.0",
+    "vercel": "^33.0.0"
+  }
+}

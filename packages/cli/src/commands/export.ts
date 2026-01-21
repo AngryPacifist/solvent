@@ -9,25 +9,30 @@ import ora from 'ora';
 import fs from 'fs';
 import { scanAndParseAccounts, classifyAccounts, calculateRentStats, getNetworkConfig, lamportsToSol } from '@solvent/core';
 import type { SponsoredAccount } from '@solvent/core';
+import { loadConfig } from '../config.js';
 
 interface ExportOptions {
     network: string;
+    rpc?: string;
     format: string;
     output: string;
     limit: string;
 }
 
 export async function exportCommand(address: string, options: ExportOptions): Promise<void> {
-    const { network, format, output, limit } = options;
-    const config = getNetworkConfig(network as 'devnet' | 'mainnet-beta');
+    const config = loadConfig();
+    const network = (config.network || options.network) as 'devnet' | 'mainnet-beta';
+    const rpcUrl = options.rpc || config.rpc;
+    const { format, output } = options;
 
     const spinner = ora('Scanning fee payer history...').start();
 
     try {
         // Scan and classify
-        const creations = await scanAndParseAccounts(address, network as 'devnet' | 'mainnet-beta');
+        const scanOptions = { ...(rpcUrl && { rpcUrl }) };
+        const creations = await scanAndParseAccounts(address, network, scanOptions);
         spinner.text = 'Classifying accounts...';
-        const accounts = await classifyAccounts(creations, address, network as 'devnet' | 'mainnet-beta');
+        const accounts = await classifyAccounts(creations, address, network, rpcUrl);
         spinner.succeed('Scan complete!');
 
         // Calculate stats

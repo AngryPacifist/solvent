@@ -1,7 +1,7 @@
 {
-    "name": "@solvent/core",
+    "name": "@angrypacifist/solvent-core",
     "version": "1.0.0",
-    "description": "Core library for Solvent rent monitoring and reclaim",
+    "description": "Core library for Solvent - Solana rent monitoring and reclaim tool for Kora fee payers",
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -11,9 +11,32 @@
             "types": "./dist/index.d.ts"
         }
     },
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "keywords": [
+        "solana",
+        "rent",
+        "kora",
+        "sponsored-transactions",
+        "fee-payer",
+        "rent-reclaim"
+    ],
+    "author": "Outis",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/AngryPacifist/solvent"
+    },
+    "homepage": "https://github.com/AngryPacifist/solvent#readme",
+    "bugs": {
+        "url": "https://github.com/AngryPacifist/solvent/issues"
+    },
     "scripts": {
         "build": "tsc",
-        "dev": "tsc --watch"
+        "dev": "tsc --watch",
+        "prepublishOnly": "npm run build"
     },
     "dependencies": {
         "@solana/web3.js": "^1.95.0",

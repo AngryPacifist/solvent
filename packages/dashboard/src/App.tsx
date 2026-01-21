@@ -140,7 +140,7 @@ function App() {
       }
 
       // Use core library functions with options object
-      const scanOptions = { limit: 100, rpcUrl }
+      const scanOptions = { limit: 100, ...(rpcUrl && { rpcUrl }) }
       const creations = await scanAndParseAccounts(address, network, scanOptions)
       const classifiedAccounts = await classifyAccounts(creations, address, network, rpcUrl)
       const walletStats = calculateRentStats(classifiedAccounts)

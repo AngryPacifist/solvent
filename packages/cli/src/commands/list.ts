@@ -12,9 +12,11 @@ import {
     type Network,
     type SponsoredAccount
 } from '@solvent/core';
+import { loadConfig } from '../config.js';
 
 interface ListOptions {
     network: string;
+    rpc?: string;
     filter: string;
     limit: string;
 }
@@ -59,8 +61,10 @@ function formatAccountTable(accounts: SponsoredAccount[]): void {
 }
 
 export async function listCommand(address: string, options: ListOptions) {
-    const network = options.network as Network;
+    const config = loadConfig();
+    const network = (config.network || options.network) as Network;
     const limit = parseInt(options.limit, 10);
+    const rpcUrl = options.rpc || config.rpc;
 
     console.log('\n🧪 SOLVENT - Account List\n');
     console.log(`Fee Payer: ${address}`);
@@ -70,8 +74,9 @@ export async function listCommand(address: string, options: ListOptions) {
     try {
         // Scan and classify
         console.log('Scanning...');
-        const creations = await scanAndParseAccounts(address, network, { limit });
-        const accounts = await classifyAccounts(creations, address, network);
+        const scanOptions = { limit, ...(rpcUrl && { rpcUrl }) };
+        const creations = await scanAndParseAccounts(address, network, scanOptions);
+        const accounts = await classifyAccounts(creations, address, network, rpcUrl);
 
         // Apply filter
         let filtered = accounts;

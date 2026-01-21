@@ -12,6 +12,12 @@ import { listCommand } from './commands/list.js';
 import { reclaimCommand } from './commands/reclaim.js';
 import { exportCommand } from './commands/export.js';
 import { watchCommand } from './commands/watch.js';
+import {
+    configShowCommand,
+    configSetRpcCommand,
+    configSetNetworkCommand,
+    configClearCommand
+} from './commands/config.js';
 
 // ASCII Art Banner
 const banner = `
@@ -44,6 +50,7 @@ program
     .command('scan <address>')
     .description('Scan a fee payer address for sponsored accounts')
     .option('-n, --network <network>', 'Network to use (devnet or mainnet-beta)', 'devnet')
+    .option('-r, --rpc <url>', 'Custom RPC endpoint URL')
     .option('-l, --limit <number>', 'Maximum transactions to scan', '100')
     .action(scanCommand);
 
@@ -52,6 +59,7 @@ program
     .command('list <address>')
     .description('List all sponsored accounts with details')
     .option('-n, --network <network>', 'Network to use (devnet or mainnet-beta)', 'devnet')
+    .option('-r, --rpc <url>', 'Custom RPC endpoint URL')
     .option('-f, --filter <type>', 'Filter by type (all, reclaimable, closeable)', 'all')
     .option('-l, --limit <number>', 'Maximum transactions to scan', '100')
     .action(listCommand);
@@ -61,6 +69,7 @@ program
     .command('reclaim <address>')
     .description('Reclaim rent from closeable accounts')
     .option('-n, --network <network>', 'Network to use (devnet or mainnet-beta)', 'devnet')
+    .option('-r, --rpc <url>', 'Custom RPC endpoint URL')
     .option('-k, --keypair <path>', 'Path to keypair file')
     .option('--dry-run', 'Preview actions without executing', false)
     .option('-y, --yes', 'Skip confirmation prompt', false)
@@ -71,6 +80,7 @@ program
     .command('export <address>')
     .description('Export account data to JSON or CSV file')
     .option('-n, --network <network>', 'Network to use (devnet or mainnet-beta)', 'devnet')
+    .option('-r, --rpc <url>', 'Custom RPC endpoint URL')
     .option('-f, --format <format>', 'Output format (json or csv)', 'json')
     .option('-o, --output <path>', 'Output file path', 'solvent-report')
     .option('-l, --limit <number>', 'Maximum transactions to scan', '100')
@@ -81,8 +91,34 @@ program
     .command('watch <address>')
     .description('Watch for new closeable accounts')
     .option('-n, --network <network>', 'Network to use (devnet or mainnet-beta)', 'devnet')
+    .option('-r, --rpc <url>', 'Custom RPC endpoint URL')
     .option('-i, --interval <seconds>', 'Polling interval in seconds', '60')
     .option('-l, --limit <number>', 'Maximum transactions to scan', '100')
     .action(watchCommand);
+
+// Config command group
+const configCmd = program
+    .command('config')
+    .description('Manage CLI configuration');
+
+configCmd
+    .command('show')
+    .description('Show current configuration')
+    .action(configShowCommand);
+
+configCmd
+    .command('set-rpc <url>')
+    .description('Set custom RPC URL (used by all commands)')
+    .action(configSetRpcCommand);
+
+configCmd
+    .command('set-network <network>')
+    .description('Set default network (devnet or mainnet-beta)')
+    .action(configSetNetworkCommand);
+
+configCmd
+    .command('clear <key>')
+    .description('Clear a config value (rpc, network, or all)')
+    .action(configClearCommand);
 
 program.parse();

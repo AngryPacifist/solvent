@@ -11,25 +11,34 @@ import {
     formatRentStats,
     type Network
 } from '@solvent/core';
+import { loadConfig } from '../config.js';
 
 interface ScanOptions {
     network: string;
+    rpc?: string;
     limit: string;
 }
 
 export async function scanCommand(address: string, options: ScanOptions) {
-    const network = options.network as Network;
+    // Load persistent config
+    const config = loadConfig();
+
+    // CLI options override config, config overrides defaults
+    const network = (options.rpc ? options.network : config.network || options.network) as Network;
     const limit = parseInt(options.limit, 10);
+    const rpcUrl = options.rpc || config.rpc;
 
     console.log('\n🧪 SOLVENT - Rent Scanner\n');
     console.log(`Fee Payer: ${address}`);
     console.log(`Network: ${network}`);
+    if (rpcUrl) console.log(`RPC: ${rpcUrl}${config.rpc && !options.rpc ? ' (from config)' : ''}`);
     console.log(`Limit: ${limit} transactions\n`);
 
     try {
         // Scan transaction history
         console.log('━'.repeat(60));
-        const creations = await scanAndParseAccounts(address, network, { limit });
+        const scanOptions = { limit, ...(rpcUrl && { rpcUrl }) };
+        const creations = await scanAndParseAccounts(address, network, scanOptions);
 
         if (creations.length === 0) {
             console.log('\n⚠️  No account creations found for this fee payer.');
@@ -42,7 +51,7 @@ export async function scanCommand(address: string, options: ScanOptions) {
 
         // Classify accounts
         console.log('━'.repeat(60));
-        const accounts = await classifyAccounts(creations, address, network);
+        const accounts = await classifyAccounts(creations, address, network, rpcUrl);
 
         // Calculate and display stats
         const stats = calculateRentStats(accounts);

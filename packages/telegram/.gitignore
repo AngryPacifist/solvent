@@ -1,0 +1,10 @@
+# Telegram Bot Local Files
+.env.local
+.env
+
+# Build output
+dist/
+
+# Vercel
+.vercel/
+.vercel

@@ -7,16 +7,20 @@
 import chalk from 'chalk';
 import ora from 'ora';
 import { scanAndParseAccounts, classifyAccounts, calculateRentStats } from '@solvent/core';
+import { loadConfig } from '../config.js';
 
 interface WatchOptions {
     network: string;
+    rpc?: string;
     interval: string;
     limit: string;
 }
 
 export async function watchCommand(address: string, options: WatchOptions): Promise<void> {
-    const { network, interval } = options;
-    const pollInterval = parseInt(interval) * 1000;
+    const config = loadConfig();
+    const network = (config.network || options.network) as 'devnet' | 'mainnet-beta';
+    const rpcUrl = options.rpc || config.rpc;
+    const pollInterval = parseInt(options.interval) * 1000;
 
     let previousCloseableCount = 0;
     let previousReclaimable = 0;
@@ -26,7 +30,8 @@ export async function watchCommand(address: string, options: WatchOptions): Prom
     console.log(chalk.cyan('\n👁️  Watching for closeable accounts...'));
     console.log(chalk.dim(`   Address: ${address}`));
     console.log(chalk.dim(`   Network: ${network}`));
-    console.log(chalk.dim(`   Interval: ${interval}s`));
+    if (rpcUrl) console.log(chalk.dim(`   RPC: ${rpcUrl}`));
+    console.log(chalk.dim(`   Interval: ${options.interval}s`));
     console.log(chalk.dim('   Press Ctrl+C to stop\n'));
 
     const scan = async () => {
@@ -42,8 +47,9 @@ export async function watchCommand(address: string, options: WatchOptions): Prom
         const spinner = ora(`[${timestamp}] Scan #${scanCount}...`).start();
 
         try {
-            const creations = await scanAndParseAccounts(address, network as 'devnet' | 'mainnet-beta');
-            const accounts = await classifyAccounts(creations, address, network as 'devnet' | 'mainnet-beta');
+            const scanOptions = { ...(rpcUrl && { rpcUrl }) };
+            const creations = await scanAndParseAccounts(address, network, scanOptions);
+            const accounts = await classifyAccounts(creations, address, network, rpcUrl);
             const stats = calculateRentStats(accounts);
 
             spinner.stop();
