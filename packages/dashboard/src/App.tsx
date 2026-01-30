@@ -10,7 +10,7 @@ import {
   lamportsToSol,
   type SponsoredAccount,
   type RentStats
-} from '@solvent/core'
+} from '@angrypacifist/solvent-core'
 
 // SVG Icons
 const Icons = {
